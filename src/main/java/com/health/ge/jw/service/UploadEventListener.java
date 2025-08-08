@@ -23,7 +23,7 @@ public class UploadEventListener {
 
     /**
      * Simulation of S3 bucket file upload is done via Kafka UI to produce message.
-     * Message sample is : Manipal01/report01.csv
+     * Message sample is : manipal01/report01.csv
      * That is recieved here in the Kafka listener method.
      *
      * @param uploadEventMessage
