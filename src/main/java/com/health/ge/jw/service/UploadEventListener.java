@@ -54,6 +54,12 @@ public class UploadEventListener {
             log.info("Handle the file in another service");
             fileHandlingService.processFileContent(fileContent, fileName);
 
+
+            log.info("Delete the file if processed successfully");
+            deleteProcessedFile(fileName);
+
+            log.info("file Deleted successfully and process completed.");
+
         } catch (Exception e) {
 
             throw new FileProcessingException("Application failed to process event.", e);
@@ -61,6 +67,11 @@ public class UploadEventListener {
         }
 
 
+    }
+
+    private static void deleteProcessedFile(String fileName) throws IOException {
+        ClassPathResource resource = new ClassPathResource("S3Bucket/" + fileName);
+        Files.delete(Paths.get(resource.getURI()));
     }
 
     private String readFileFromResources(String fileName) throws Exception {
