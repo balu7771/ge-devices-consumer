@@ -32,3 +32,9 @@ CREATE TABLE apollo01.device_data (LIKE public.device_data INCLUDING ALL);
 CREATE SEQUENCE IF NOT EXISTS apollo01.device_data_seq START 1;
 
 
+Task 4:
+a. Create API to read data from tenant specific DB
+b. Inputs for the API to include TenantID in the header and deviceID
+
+
+
