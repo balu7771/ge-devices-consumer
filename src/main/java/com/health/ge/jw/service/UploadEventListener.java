@@ -1,5 +1,6 @@
 package com.health.ge.jw.service;
 
+import com.health.ge.jw.exception.FileProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ public class UploadEventListener {
      *
      * @param uploadEventMessage
      */
-    @KafkaListener(topics="file-upload-events", groupId = "ge-file-processor")
-    public void fileUploadListener(String uploadEventMessage){
+    @KafkaListener(topics = "file-upload-events", groupId = "ge-file-processor")
+    public void fileUploadListener(String uploadEventMessage) {
 
         log.info("An event with file upload message to S3 Bucket is received as: " + uploadEventMessage);
 
@@ -44,25 +45,27 @@ public class UploadEventListener {
         String fileName = uploadEventMessage;
         log.info("File name is: " + fileName);
 
+
         try {
             log.info("Simulation of downloading contents of the file from S3 bucket");
             String fileContent = readFileFromResources(fileName);
 
+
             log.info("Handle the file in another service");
-            fileHandlingService.processFileContent(fileContent,fileName);
+            fileHandlingService.processFileContent(fileContent, fileName);
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+
+            throw new FileProcessingException("Application failed to process event.", e);
+
         }
-
-
 
 
     }
 
     private String readFileFromResources(String fileName) throws Exception {
 
-        ClassPathResource resource = new ClassPathResource("S3Bucket/"+fileName);
+        ClassPathResource resource = new ClassPathResource("S3Bucket/" + fileName);
         return Files.readString(Paths.get(resource.getURI()));
 
     }

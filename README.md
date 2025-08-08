@@ -36,5 +36,9 @@ Task 4:
 a. Create API to read data from tenant specific DB
 b. Inputs for the API to include TenantID in the header and deviceID
 
-
+Task 5:
+a. Create an exception class and a file process tracker class.
+b. In the flow, wherever there are decisions like file processing etc,
+put status in the public schama for App DB : PENDING -> SUCCESS/FAILED
+c. Throw Exception where the flow has a failure, like parsing error, db write failures etc.
 

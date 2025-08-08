@@ -1,6 +1,7 @@
 package com.health.ge.jw.service;
 
 import com.health.ge.jw.entity.DeviceData;
+import com.health.ge.jw.exception.FileProcessingException;
 import com.health.ge.jw.repository.DeviceDataRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -29,6 +30,8 @@ public class FileHandlingService {
     @PersistenceContext
     EntityManager entityManager;
 
+
+
     @Transactional
     public void processFileContent(String fileContent, String fileName) {
         log.info("Inside method to process file content.");
@@ -37,7 +40,12 @@ public class FileHandlingService {
 
         log.info("Tenant ID is : " + tenantID);
 
+
         List<DeviceData> deviceDataList = parseCSVContent(fileContent);
+
+        if(deviceDataList.isEmpty()){
+            throw new FileProcessingException("There are no devices to extract");
+        }
 
         entityManager.createNativeQuery("SET search_path TO " + tenantID.trim()).executeUpdate();
 
