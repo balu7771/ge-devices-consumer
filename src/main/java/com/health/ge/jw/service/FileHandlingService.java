@@ -2,6 +2,9 @@ package com.health.ge.jw.service;
 
 import com.health.ge.jw.entity.DeviceData;
 import com.health.ge.jw.repository.DeviceDataRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,10 @@ public class FileHandlingService {
     @Autowired
     DeviceDataRepository deviceDataRepository;
 
+    @PersistenceContext
+    EntityManager entityManager;
+
+    @Transactional
     public void processFileContent(String fileContent, String fileName) {
         log.info("Inside method to process file content.");
 
@@ -32,7 +39,11 @@ public class FileHandlingService {
 
         List<DeviceData> deviceDataList = parseCSVContent(fileContent);
 
-        for(DeviceData deviceData:deviceDataList){
+        entityManager.createNativeQuery("SET search_path TO " + tenantID.trim()).executeUpdate();
+
+        log.info("Schema changed to : " +tenantID.trim());
+
+        for (DeviceData deviceData : deviceDataList) {
             deviceDataRepository.save(deviceData);
         }
 

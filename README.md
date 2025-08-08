@@ -19,3 +19,16 @@ b. In task 2.c method, write logic to separate the tenantID and add the contents
 into the tenantkey
 c. create model and repository for the tenantDevices field in the sample file.
 d. persist the reports data into devices table of each schema.
+
+
+#SQL Statements:
+-- Step 1: Create schema if not already
+CREATE SCHEMA IF NOT EXISTS apollo01;
+
+-- Step 2: Create table in new schema
+CREATE TABLE apollo01.device_data (LIKE public.device_data INCLUDING ALL);
+
+-- Step 3 : Create sequence
+CREATE SEQUENCE IF NOT EXISTS apollo01.device_data_seq START 1;
+
+
