@@ -2,8 +2,9 @@ package com.health.ge.jw.entity;
 
 import jakarta.persistence.*;
 
+
 @Entity
-@Table(name = "file_processing_status")
+@Table(name = "file_processing_status",schema = "public")
 public class FileProcessingStatus {
 
     public enum ProcessStatus {
@@ -26,6 +27,9 @@ public class FileProcessingStatus {
 
     @Column(name = "error_message")
     private String errorMessage;
+
+    public FileProcessingStatus() {
+    }
 
     public FileProcessingStatus(String fileName, String tenantId, ProcessStatus status, String errorMessage) {
         this.fileName = fileName;
