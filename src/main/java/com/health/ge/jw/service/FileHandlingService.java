@@ -1,6 +1,7 @@
 package com.health.ge.jw.service;
 
 import com.health.ge.jw.entity.DeviceData;
+import com.health.ge.jw.entity.FileProcessingStatus;
 import com.health.ge.jw.exception.FileProcessingException;
 import com.health.ge.jw.repository.DeviceDataRepository;
 import jakarta.persistence.EntityManager;
@@ -30,7 +31,8 @@ public class FileHandlingService {
     @PersistenceContext
     EntityManager entityManager;
 
-
+    @Autowired
+    FileProcessingTracker fileProcessingTracker;
 
     @Transactional
     public void processFileContent(String fileContent, String fileName) {
@@ -40,10 +42,17 @@ public class FileHandlingService {
 
         log.info("Tenant ID is : " + tenantID);
 
+        //insert a record in AppDB to check the status.
+        fileProcessingTracker.markPending(fileName, tenantID);
 
         List<DeviceData> deviceDataList = parseCSVContent(fileContent);
 
         if(deviceDataList.isEmpty()){
+
+            // update the status of the file process to failed.
+            fileProcessingTracker.markStatus(fileName,tenantID,
+                    FileProcessingStatus.ProcessStatus.FAILED,"Empty Devices");
+
             throw new FileProcessingException("There are no devices to extract");
         }
 
